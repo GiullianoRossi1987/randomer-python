@@ -98,6 +98,96 @@ class CPFSystem(object):
     def __init__(self): pass
 
 
+class CNPJSystem(object):
+    """
+
+    """
+
+    class InvalidCNPJ(Exception):
+        args = "That's not a valid CNPJ"
+
+    class InvalidChar(ValueError):
+        args = "That's not a valid Char to a CNPJ number!"
+
+    def load_cnpj_value(self, raw_cnpj: str) -> str:
+        """
+
+        :param raw_cnpj:
+        :return:
+        """
+        rt = ""
+        for i in raw_cnpj:
+            try:
+                a = int(i)
+            except ValueError or TypeError: pass
+            else:
+                rt += str(a)
+        if len(rt) != 14: raise self.InvalidCNPJ()
+        return rt
+
+    def check_valid_cnpj(self, cnpj: str) -> bool:
+        """
+
+        :param cnpj:
+        :return:
+        """
+        rt = self.load_cnpj_value(cnpj)
+        pesos = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        sum1 = 0
+        for value1 in range(0, 12):
+            sum1 += int(rt[value1]) * pesos[value1]
+        sum2 = 0
+        for value2 in range(0, 13):
+            if value2 == 0:
+                 sum2 += int(rt[value2]) * 6
+                 continue
+            else: sum2 += int(rt[value2]) * pesos[value2 -1]
+        mod_v1 = 11 - (sum1 % 11)
+        mod_v2 = 11 - (sum2 % 11)
+        if (mod_v1 < 2 and rt[-2] == "0") and (mod_v2 < 2 and rt[-1] == "0"): return True
+        elif str(mod_v1) == rt[-2] and str(mod_v2) == rt[-1]: return True
+        else: return False
+
+    def create_valid_cnpj(self) -> str:
+        """
+
+        :return:
+        """
+        while True:
+            try:
+                rt1 = (str(randint(0, 9)) + str(randint(0, 9)))
+                rt2 = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                rt3 = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                nums = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                dv = str(str(randint(0, 9)) + str(randint(0, 9)))
+                cnpj = f"{rt1}.{rt2}.{rt3}/{nums}-{dv}"
+                if self.check_valid_cnpj(cnpj) is True: return cnpj
+                else: pass
+            except self.InvalidCNPJ() or self.InvalidChar(): pass
+
+    def create_invalid_cnpj(self) -> str:
+        """
+
+        :return:
+        """
+        cnpj = ""
+        while True:
+            try:
+                rt1 = (str(randint(0, 9)) + str(randint(0, 9)))
+                rt2 = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                rt3 = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                nums = (str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)) + str(randint(0, 9)))
+                dv = str(str(randint(0, 9)) + str(randint(0, 9)))
+                cnpj = f"{rt1}.{rt2}.{rt3}/{nums}-{dv}"
+                if self.check_valid_cnpj(cnpj) is True: pass
+                else: return cnpj
+            except self.InvalidCNPJ() or self.InvalidChar(): return cnpj
+
+
+
+
+
+
 
 
 
