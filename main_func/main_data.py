@@ -1,17 +1,21 @@
 # coding = utf-8
 # using namespace std
 from random import randint
-# from typing import AnyStr
 from main_func.logger import Logs
+from sys import argv
 
-main_logs = Logs("./main_func/logs.json")  # visible on the APP_ROOT
 
+# TODO: Create the main docs
 
 class CPFSystem(object):
     """
 
     """
-    nums = int
+    value = ""
+    is_valid = bool
+
+    help_str = """
+    """
 
     class InvalidCPFValue(TypeError):
         args = "That's not a valid CPF Character!"
@@ -19,7 +23,8 @@ class CPFSystem(object):
     class InvalidCPF(Exception):
         args = "That's not a valid CPF"
 
-    def load_cpf_data(self, raw_cpf: str) -> str:
+    @staticmethod
+    def load_cpf_data(raw_cpf: str) -> str:
         """
 
         :param raw_cpf:
@@ -95,12 +100,22 @@ class CPFSystem(object):
                 else: continue
             except self.InvalidCPF: return tt_cpf
 
-    def __init__(self): pass
+    def __init__(self, cpf = "", from_val: bool = False):
+        """
+
+        :param cpf:
+        """
+        if from_val is True: pass
+        else:
+            self.value = cpf
+            self.is_valid = self.check_valid_cpf(self.value)
 
 
 class CNPJSystem(object):
     """
 
+    """
+    help_txt = """
     """
 
     class InvalidCNPJ(Exception):
@@ -184,15 +199,87 @@ class CNPJSystem(object):
             except self.InvalidCNPJ() or self.InvalidChar(): return cnpj
 
 
+class ArgvSystem(object):
+    """
 
+    """
+    local_cpf = CPFSystem()
+    local_cnpj = CNPJSystem()
+    logs_system = Logs("./main_func/logs.json")
+    help_txt = """
+    """
 
+    class InvalidOption(Exception):
+        args = "That's not a valid option!"
 
+    class ExpectingArgv(IndexError):
+        args = "Expecting another argument/option!"
 
+    def __init__(self):
+        """
 
-
-
-
-
+        """
+        if len(argv) == 1:
+            if argv[1] == "--help":
+                print(self.help_txt)
+                exit(0)
+            elif argv[1] == "--cpf":
+                try:
+                    if argv[2] == "-g":
+                        try:
+                            if argv[3] == "-v":
+                                cpf = self.local_cpf.create_valid_cpf()
+                                print(cpf)
+                                self.logs_system.add_log(f"deployed valid CPF '{cpf}'")
+                                exit()
+                            elif argv[3] == "-i":
+                                cpf = self.local_cpf.create_valid_cpf()
+                                print(cpf)
+                                self.logs_system.add_log(f"deployed invalid CPF '{cpf}'")
+                                exit()
+                            else: raise self.InvalidOption()
+                        except IndexError: raise self.ExpectingArgv()
+                    elif argv[2] == "-c":
+                        try:
+                            if self.local_cpf.check_valid_cpf(argv[3]) is True:
+                                print("Valid!")
+                                exit(0)
+                            else:
+                                print("Invalid")
+                                exit(0)
+                        except IndexError: raise self.ExpectingArgv()
+                    elif argv[2] == "--help":
+                        print(self.local_cpf.help_str)
+                        exit(0)
+                    else: raise self.InvalidOption()
+                except IndexError: raise self.ExpectingArgv()
+            elif argv[1] == "--cnpj":
+                try:
+                    if argv[2] == "-g":
+                        try:
+                            if argv[3] == "-v":
+                                print(self.local_cnpj.create_valid_cnpj())
+                                exit()
+                            elif argv[3] == "-i":
+                                print(self.local_cnpj.create_invalid_cnpj())
+                            else: raise self.InvalidOption()
+                        except IndexError: raise self.ExpectingArgv()
+                    elif argv[2] == "-c":
+                        try:
+                            if self.local_cnpj.check_valid_cnpj(argv[3]) is True:
+                                print("Valid!")
+                                exit(0)
+                            else:
+                                print("Invalid!")
+                                exit(0)
+                        except IndexError: raise self.ExpectingArgv()
+                    elif argv[2] == "--help":
+                        print(self.local_cnpj.help_txt)
+                        exit(0)
+                    else: raise self.InvalidOption()
+                except IndexError: raise self.ExpectingArgv()
+            else: raise self.InvalidOption()
+        else: pass
 
 
 
