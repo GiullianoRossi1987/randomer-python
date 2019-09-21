@@ -62,10 +62,13 @@ class CPFSystemScreens(object):
                         dt = local_obj.check_valid_cpf(cpf_input)
                         if dt is True:
                             print("That's a valid CPF!\nValue: '"+cpf_input+"'")
+                            input("")
                         else:
                             print("That's not a valid CPF\nValue: '"+cpf_input+"'")
+                            input()
                     except local_obj.InvalidCPF or local_obj.InvalidCPFValue:
                         print("That's not a valid CPF\nValue: '" + cpf_input + "'")
+                        input()
                     finally:
                         self.logger.add_log(f"Check Valid CPF. Value = '{cpf_input}'", 1, "04004")
                     self.logger.add_log(f"check valid CPF. Value = '{cpf_input}'")

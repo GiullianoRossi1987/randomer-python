@@ -100,15 +100,7 @@ class CPFSystem(object):
                 else: continue
             except self.InvalidCPF: return tt_cpf
 
-    def __init__(self, cpf = "", from_val: bool = False):
-        """
-
-        :param cpf:
-        """
-        if from_val is True: pass
-        else:
-            self.value = cpf
-            self.is_valid = self.check_valid_cpf(self.value)
+    def __init__(self): pass
 
 
 class CNPJSystem(object):
@@ -219,7 +211,7 @@ class ArgvSystem(object):
         """
 
         """
-        if len(argv) == 1:
+        if len(argv) > 1:
             if argv[1] == "--help":
                 print(self.help_txt)
                 exit(0)

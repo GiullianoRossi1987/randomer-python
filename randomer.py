@@ -2,6 +2,10 @@
 # using namespace std
 from main_func.main_data import ArgvSystem
 from main_func.screens import CNPJSystemScreens, CPFSystemScreens
+from os import system
+from sys import platform
+
+to_windows = platform == "windows"
 
 help_str = """
 """
@@ -15,6 +19,8 @@ ArgvSystem()
 # if not args
 while True:
     # index screen
+    if to_windows is True: system("cls")
+    else: system("clear")
     while True:
         print("""
         
